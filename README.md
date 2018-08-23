@@ -20,4 +20,12 @@ cmake ..               # Configure the project.
 cmake --build .        # Build all default targets.
 ```
 
+If you don't want `cd` :), you can also use below command to create `build` folder from project folder:
+
+```
+cmake -H. -Bbuild
+# H indicates source directory
+# B indicates build directory
+```
+
 Tien Do (tiendq).
