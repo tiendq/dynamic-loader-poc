@@ -2,18 +2,26 @@ cmake_minimum_required(VERSION 3.12.0)
 
 project(dynloader)
 
-# Set the output folder where your program will be created
-set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build/bin)
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+# UNIX, WIN32, WINRT, CYGWIN, APPLE are environment variables as flags set by default system
+if(UNIX)
+  message("Building for ${CMAKE_SYSTEM_NAME} system")
+elseif(WIN32)
+  message("Building for Windows system")
+endif()
+
+set(CMAKE_BUILD_TYPE Release)
+message("${CMAKE_BUILD_TYPE} build configuration is detected")
 
 add_subdirectory(mathman)
+add_subdirectory(test1)
+add_subdirectory(test2)
 
-# The following folder will be included
-include_directories("${PROJECT_SOURCE_DIR}/mathman")
+set(MAIN_TARGET_NAME dynloader)
+set(PROJECT_SOURCES main.cpp)
 
-# Add the binary tree to the search path for include files so that we will find cmake-config.h
-include_directories("${CMAKE_BINARY_DIR}")
+# Set the output folder where your program will be created
+set(CMAKE_BINARY_DIR "${CMAKE_SOURCE_DIR}/build/bin")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # The version number
 set(POC_VERSION_MAJOR 0)
@@ -26,5 +34,25 @@ configure_file(
   "${CMAKE_BINARY_DIR}/cmake-config.h"
 )
 
-add_executable(dynloader main.cpp)
-target_link_libraries(dynloader mathman)
+# set(CMAKE_CXX_FLAGS -std=c++11)
+
+add_executable(${MAIN_TARGET_NAME} ${PROJECT_SOURCES})
+
+target_include_directories(${MAIN_TARGET_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/mathman")
+target_include_directories(${MAIN_TARGET_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/test1")
+target_include_directories(${MAIN_TARGET_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/test2")
+target_include_directories(${MAIN_TARGET_NAME} PRIVATE ${CMAKE_BINARY_DIR})
+
+target_link_libraries(${MAIN_TARGET_NAME} PRIVATE mathman)
+target_link_libraries(${MAIN_TARGET_NAME} PRIVATE test1)
+target_link_libraries(${MAIN_TARGET_NAME} PRIVATE test2)
+# target_compile_features(${MAIN_TARGET_NAME} PRIVATE cxx_std_11)
+
+if (MSVC)
+  # warning level 4 and all warnings as errors
+  target_compile_options(${MAIN_TARGET_NAME} PRIVATE "/W4 /WX")
+else()
+  # lots of warnings and all warnings as errors
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -pedantic -Werror")
+  # target_compile_options(${MAIN_TARGET_NAME} PRIVATE "SHELL: -Wall -Wextra -pedantic -Werror")
+endif()
