@@ -1,9 +1,13 @@
 #include <iostream>
 #include <memory>
-#include <dlfcn.h>
 #include "cmake-config.h"
 #include "mysqrt.h"
-#include "unix-library-loader.h"
+
+#ifdef __WINDOWS__
+  #include "windows-library-loader.h"
+#else
+  #include "unix-library-loader.h"
+#endif // __WINDOWS__
 
 using namespace std;
 
@@ -22,7 +26,13 @@ int main(int argc, char **argv) {
 
   cout << "sqrt(25) = " << mysqrt(25) << endl;
 
-  auto test1 = make_unique<UnixLibraryLoader>("/Users/tiendq/GitHub/dynamic-loader-poc/build/bin/libtest1.dylib");
+  string fileName = "/Users/tiendq/GitHub/dynamic-loader-poc/build/bin/libtest1.dylib";
+
+#ifdef __WINDOWS__
+  auto test1 = make_unique<WindowsLibraryLoader>(fileName);
+#else
+  auto test1 = make_unique<UnixLibraryLoader>(fileName);
+#endif // __WINDOWS__
 
   if (0 != test1->loadLibrary())
     return -1;

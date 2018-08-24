@@ -3,9 +3,9 @@
 #include <iostream>
 #include "library-loader-base.h"
 
-class UnixLibraryLoader: public LibraryLoaderBase {
+class WindowsLibraryLoader: public LibraryLoaderBase {
   public:
-    UnixLibraryLoader(std::string const &fileName) : LibraryLoaderBase(fileName) {}
+    WindowsLibraryLoader(std::string const &fileName) : LibraryLoaderBase(fileName) {}
 
     int loadLibrary();
     int closeLibrary();

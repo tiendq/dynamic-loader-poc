@@ -1,12 +1,10 @@
 #include <iostream>
-#include <dlfcn.h>
-#include "unix-library-loader.h"
+#include <windows.h>
+#include "windows-library-loader.h"
 
 using namespace std;
 
-int UnixLibraryLoader::loadLibrary() {
-  // https://www.unix.com/man-page/osx/3/dlopen/
-  // https://www.safaribooksonline.com/library/view/advanced-mac-os/9780321706560/ch06s06.html
+int WindowsLibraryLoader::loadLibrary() {
   void *handle = dlopen(m_fileName.c_str(), RTLD_NOW);
 
   if (nullptr == handle) {
@@ -19,7 +17,7 @@ int UnixLibraryLoader::loadLibrary() {
   return 0;
 }
 
-int UnixLibraryLoader::closeLibrary() {
+int WindowsLibraryLoader::closeLibrary() {
   if (nullptr == m_handle) {
     cerr << "Invalid library handle" << endl;
     return -1;
@@ -36,7 +34,7 @@ int UnixLibraryLoader::closeLibrary() {
   return 0;
 }
 
-void* UnixLibraryLoader::getFunctionPointer(string const &funcName) {
+void* WindowsLibraryLoader::getFunctionPointer(string const &funcName) {
   if (nullptr == m_handle) {
     cerr << "Invalid library handle" << endl;
     return nullptr;
