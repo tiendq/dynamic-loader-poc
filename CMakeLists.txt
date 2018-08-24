@@ -2,15 +2,21 @@ cmake_minimum_required(VERSION 3.12.0)
 
 project(dynloader)
 
-# UNIX, WIN32, WINRT, CYGWIN, APPLE are environment variables as flags set by default system
-if(UNIX)
-  message("Building for ${CMAKE_SYSTEM_NAME} system")
-elseif(WIN32)
-  message("Building for Windows system")
-endif()
+message(STATUS "Building for ${CMAKE_SYSTEM_NAME} system")
 
 set(CMAKE_BUILD_TYPE Release)
-message("${CMAKE_BUILD_TYPE} build configuration is detected")
+message(STATUS "${CMAKE_BUILD_TYPE} build configuration is detected")
+
+# UNIX, WIN32, WINRT, CYGWIN, APPLE are environment variables as flags set by default system
+if(WIN32)
+  # WIN32
+elseif(APPLE)
+  # APPLE
+elseif(UNIX)
+  # UNIX
+else()
+  message(FATAL_ERROR "Unsupported system. Build aborted.")
+endif()
 
 add_subdirectory(mathman)
 add_subdirectory(test1)
@@ -34,18 +40,16 @@ configure_file(
   "${CMAKE_BINARY_DIR}/cmake-config.h"
 )
 
-# set(CMAKE_CXX_FLAGS -std=c++11)
-
 add_executable(${MAIN_TARGET_NAME} ${PROJECT_SOURCES})
 
 target_include_directories(${MAIN_TARGET_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/mathman")
-target_include_directories(${MAIN_TARGET_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/test1")
-target_include_directories(${MAIN_TARGET_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/test2")
+# target_include_directories(${MAIN_TARGET_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/test1")
+# target_include_directories(${MAIN_TARGET_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/test2")
 target_include_directories(${MAIN_TARGET_NAME} PRIVATE ${CMAKE_BINARY_DIR})
 
 target_link_libraries(${MAIN_TARGET_NAME} PRIVATE mathman)
-target_link_libraries(${MAIN_TARGET_NAME} PRIVATE test1)
-target_link_libraries(${MAIN_TARGET_NAME} PRIVATE test2)
+# target_link_libraries(${MAIN_TARGET_NAME} PRIVATE test1)
+# target_link_libraries(${MAIN_TARGET_NAME} PRIVATE test2)
 # target_compile_features(${MAIN_TARGET_NAME} PRIVATE cxx_std_11)
 
 if (MSVC)

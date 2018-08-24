@@ -1,4 +1,4 @@
-set(PROJECT_SOURCES test2.cpp test2.h)
+set(PROJECT_SOURCES main.cpp test2.cpp test2.h)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 add_library(test2 SHARED ${PROJECT_SOURCES})
