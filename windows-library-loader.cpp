@@ -5,11 +5,13 @@
 using namespace std;
 
 int WindowsLibraryLoader::loadLibrary() {
-  void *handle = dlopen(m_fileName.c_str(), RTLD_NOW);
+  HMODULE handle = LoadLibrary(m_fileName);
 
   if (nullptr == handle) {
+    DWORD error = GetLastError();
+
     cerr << "Could not load library " << m_fileName << endl;
-    cerr << "Error: " << dlerror() << endl;
+    cerr << "Error: " << error << endl;
     return -1;
   }
 
@@ -23,11 +25,13 @@ int WindowsLibraryLoader::closeLibrary() {
     return -1;
   }
 
-  int n = dlclose(m_handle);
+  BOOL success = FreeLibrary(m_handle);
 
-  if (0 != n) {
+  if (!success) {
+    DWORD error = GetLastError();
+
     cerr << "Could not unload library " << m_fileName << endl;
-    cerr << "Error: " << dlerror() << endl;
+    cerr << "Error: " << error << endl;
     return -1;
   }
 
@@ -40,12 +44,13 @@ void* WindowsLibraryLoader::getFunctionPointer(string const &funcName) {
     return nullptr;
   }
 
-  // https://www.unix.com/man-page/osx/3/dlsym/
-  void *fp = dlsym(m_handle, funcName.c_str());
+  void *fp = GetProcAddress(m_handle, funcName.c_str());
 
   if (nullptr == fp) {
+    DWORD error = GetLastError();
+
     cerr << "Could not get function pointer for " << funcName << endl;
-    cerr << "Error: " << dlerror() << endl;
+    cerr << "Error: " << error << endl;
     return nullptr;
   }
 

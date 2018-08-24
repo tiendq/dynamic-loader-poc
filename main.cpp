@@ -26,7 +26,13 @@ int main(int argc, char **argv) {
 
   cout << "sqrt(25) = " << mysqrt(25) << endl;
 
+#if defined(__WINDOWS__)
+  string fileName = "/dynamic-loader-poc/build/bin/test1.dll";
+#elif defined(__UNIX__)
+  string fileName = "dynamic-loader-poc/build/bin/libtest1.so";
+#else
   string fileName = "/Users/tiendq/GitHub/dynamic-loader-poc/build/bin/libtest1.dylib";
+#endif
 
 #ifdef __WINDOWS__
   auto test1 = make_unique<WindowsLibraryLoader>(fileName);
