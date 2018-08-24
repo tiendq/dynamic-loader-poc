@@ -2,8 +2,17 @@
 
 using namespace std;
 
-extern "C" void startMain() {
-  cout << "startMain() called on Test1" << endl;
-  // cout << "Test1 called with " << sizeof(config) << endl;
-  // return config;
+#ifdef __WINDOWS__
+  #define EXPORTED_FUNCTION __declspec(dllexport)
+#else
+  #define EXPORTED_FUNCTION
+#endif // __WINDOWS__
+
+extern "C" {
+
+  EXPORTED_FUNCTION void* startMain(void const *config) {
+    cout << "startMain() called with " << sizeof(config) << endl;
+    return nullptr;
+  }
+
 }

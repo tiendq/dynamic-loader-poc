@@ -1,7 +1,7 @@
 Dynamic Loader POC
 ==================
 
-POC for dynamically loading app modules.
+A C++ POC for dynamically loading app modules (plugins), cross-platform.
 
 ## Features
 * Build with CMake, support Windows/Linux/macOS

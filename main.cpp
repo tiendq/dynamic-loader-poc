@@ -1,25 +1,19 @@
 #include <iostream>
-#include <dlfcn.h>
+#include <memory>
 #include "cmake-config.h"
 #include "mysqrt.h"
 
+#ifdef __WINDOWS__
+  #include "windows-library-loader.h"
+#else
+  #include "unix-library-loader.h"
+#endif // __WINDOWS__
+
 using namespace std;
 
-// Get the function pointer to the function
-void* getFunctionPointer(void *lib, char const *name) {
-  // https://www.unix.com/man-page/osx/3/dlsym/
-  void *fptr = dlsym(lib, name);
+using moduleInitializer = void* (*)(void const *);
 
-  if (!fptr) {
-    cerr << "Could not get function pointer for " << name << endl;
-    cerr << "Error: " << dlerror() << endl;
-
-    return nullptr;
-  }
-
-  return fptr;
-}
-
+// https://en.wikipedia.org/wiki/Dynamic_loading
 int main(int argc, char **argv) {
   cout << "Hello, you're running dynamic loader POC\n";
 
@@ -32,27 +26,32 @@ int main(int argc, char **argv) {
 
   cout << "sqrt(25) = " << mysqrt(25) << endl;
 
-  void (*ptr)();
+#if defined(__WINDOWS__)
+  string fileName = "/dynamic-loader-poc/build/bin/test1.dll";
+#elif defined(__UNIX__)
+  string fileName = "dynamic-loader-poc/build/bin/libtest1.so";
+#else
+  string fileName = "/Users/tiendq/GitHub/dynamic-loader-poc/build/bin/libtest1.dylib";
+#endif
 
-  // Open the dynamic library
-  // now or RTLD_LAZY?
-  // https://www.unix.com/man-page/osx/3/dlopen/
-  // https://www.safaribooksonline.com/library/view/advanced-mac-os/9780321706560/ch06s06.html
-  void *handle = dlopen("/Users/tiendq/GitHub/dynamic-loader-poc/build/bin/libtest1.dylib", RTLD_NOW);
+#ifdef __WINDOWS__
+  auto test1 = make_unique<WindowsLibraryLoader>(fileName);
+#else
+  auto test1 = make_unique<UnixLibraryLoader>(fileName);
+#endif // __WINDOWS__
 
-  if (!handle) {
-    cerr << "Could not open libtest1.dylib\n" << endl;
-    cerr << "Error: " << dlerror() << endl;
-    return 1;
+  if (0 != test1->loadLibrary())
+    return -1;
+
+  auto ptr = (moduleInitializer)test1->getFunctionPointer("startMain");
+
+  if (ptr) {
+    auto temp = new char;
+    ptr(temp);
+    delete temp;
   }
 
-  // Get the pointers to the functions within the library
-  // test with "nm -gU libtest1.dylib"
-  ptr = (void (*)())getFunctionPointer(handle, "startMain");
-
-  ptr(); // = startMain()
-
-  dlclose(handle);
+  test1->closeLibrary();
 
   return 0;
 }
