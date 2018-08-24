@@ -2,8 +2,7 @@
 
 using namespace std;
 
-extern "C" void startMain() {
-  cout << "startMain() called on Test1" << endl;
-  // cout << "Test1 called with " << sizeof(config) << endl;
-  // return config;
+extern "C" void* startMain(void const *config) {
+  cout << "startMain() called with " << sizeof(config) << endl;
+  return nullptr;
 }

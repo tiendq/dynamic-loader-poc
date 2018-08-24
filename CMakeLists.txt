@@ -23,7 +23,12 @@ add_subdirectory(test1)
 add_subdirectory(test2)
 
 set(MAIN_TARGET_NAME dynloader)
-set(PROJECT_SOURCES main.cpp)
+
+set(PROJECT_SOURCES
+  main.cpp
+  library-loader-base.h
+  unix-library-loader.cpp
+  unix-library-loader.h)
 
 # Set the output folder where your program will be created
 set(CMAKE_BINARY_DIR "${CMAKE_SOURCE_DIR}/build/bin")
@@ -50,13 +55,13 @@ target_include_directories(${MAIN_TARGET_NAME} PRIVATE ${CMAKE_BINARY_DIR})
 target_link_libraries(${MAIN_TARGET_NAME} PRIVATE mathman)
 # target_link_libraries(${MAIN_TARGET_NAME} PRIVATE test1)
 # target_link_libraries(${MAIN_TARGET_NAME} PRIVATE test2)
-# target_compile_features(${MAIN_TARGET_NAME} PRIVATE cxx_std_11)
+target_compile_features(${MAIN_TARGET_NAME} PRIVATE cxx_std_14)
 
 if (MSVC)
   # warning level 4 and all warnings as errors
   target_compile_options(${MAIN_TARGET_NAME} PRIVATE "/W4 /WX")
 else()
   # lots of warnings and all warnings as errors
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -pedantic -Werror")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror")
   # target_compile_options(${MAIN_TARGET_NAME} PRIVATE "SHELL: -Wall -Wextra -pedantic -Werror")
 endif()
