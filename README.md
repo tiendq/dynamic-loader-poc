@@ -45,4 +45,12 @@ pacman -S cmake
 
 Build from `/var/dynamic-loader-poc`.
 
+## Test Windows
+
+A Visual Studio edition is required to build successfully on Windows. I tested this project with [Visual Studio Community 2017](https://visualstudio.microsoft.com/downloads/) on Windows 7 64-bit in a VirtualBox.
+
+You have to open a new Command promt window from the shortcut `Developer Command Prompt for VS 2017` from Start Menu to run build command below. This shortcut is actually a batch file at `%VS150COMNTOOLS%VsDevCmd.bat` to initialize build environment.
+
+Go to `build` folder and run `devenv /build Release dynloader.sln`.
+
 Tien Do (tiendq).
