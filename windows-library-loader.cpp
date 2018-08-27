@@ -1,11 +1,12 @@
 #include <iostream>
+#include <string>
 #include <windows.h>
 #include "windows-library-loader.h"
 
 using namespace std;
 
 int WindowsLibraryLoader::loadLibrary() {
-  HMODULE handle = LoadLibrary(m_fileName);
+  HMODULE handle = LoadLibrary(m_fileName.c_str());
 
   if (nullptr == handle) {
     DWORD error = GetLastError();
@@ -25,7 +26,7 @@ int WindowsLibraryLoader::closeLibrary() {
     return -1;
   }
 
-  BOOL success = FreeLibrary(m_handle);
+  BOOL success = FreeLibrary((HMODULE)m_handle);
 
   if (!success) {
     DWORD error = GetLastError();
@@ -44,7 +45,7 @@ void* WindowsLibraryLoader::getFunctionPointer(string const &funcName) {
     return nullptr;
   }
 
-  void *fp = GetProcAddress(m_handle, funcName.c_str());
+  void *fp = (void *)GetProcAddress((HMODULE)m_handle, funcName.c_str());
 
   if (nullptr == fp) {
     DWORD error = GetLastError();

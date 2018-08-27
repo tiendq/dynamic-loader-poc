@@ -1,5 +1,6 @@
 #include <iostream>
 #include <memory>
+#include <string>
 #include "cmake-config.h"
 #include "mysqrt.h"
 
@@ -27,7 +28,7 @@ int main(int argc, char **argv) {
   cout << "sqrt(25) = " << mysqrt(25) << endl;
 
 #if defined(__WINDOWS__)
-  string fileName = "/dynamic-loader-poc/build/bin/test1.dll";
+  string fileName = "test1.dll";
 #elif defined(__LINUX__)
   string fileName = "/var/dynamic-loader-poc/build/bin/libtest1.so";
 #else // __MACOS__
