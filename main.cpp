@@ -28,11 +28,13 @@ int main(int argc, char **argv) {
 
 #if defined(__WINDOWS__)
   string fileName = "/dynamic-loader-poc/build/bin/test1.dll";
-#elif defined(__UNIX__)
-  string fileName = "dynamic-loader-poc/build/bin/libtest1.so";
-#else
+#elif defined(__LINUX__)
+  string fileName = "/var/dynamic-loader-poc/build/bin/libtest1.so";
+#else // __MACOS__
   string fileName = "/Users/tiendq/GitHub/dynamic-loader-poc/build/bin/libtest1.dylib";
 #endif
+
+  cout << "Loading library " << fileName << endl;
 
 #ifdef __WINDOWS__
   auto test1 = make_unique<WindowsLibraryLoader>(fileName);
