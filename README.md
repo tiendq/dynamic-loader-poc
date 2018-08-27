@@ -31,7 +31,7 @@ cmake -H. -Bbuild
 ## Test Linux
 
 ### Create Docker Container
-Create a container based on [ArchLinux](https://www.archlinux.org/) by running `docker run --name dynamic-loader-poc -w /var/dynamic-loader-poc -v `pwd`:/var/dynamic-loader-poc -it base/archlinux bash` from `dynamic-loader-poc` on host machine.
+Create a container based on [ArchLinux](https://www.archlinux.org/) by running `docker run --name dynamic-loader-poc -w /var/dynamic-loader-poc -v ``pwd``:/var/dynamic-loader-poc -it base/archlinux bash` from `dynamic-loader-poc` on host machine.
 
 Start container with `docker start dynamic-loader-poc` and use the command `docker exec -it dynamic-loader-poc bash` to get a bash shell in the container.
 
