@@ -10,8 +10,8 @@ int UnixLibraryLoader::loadLibrary() {
   void *handle = dlopen(m_fileName.c_str(), RTLD_NOW);
 
   if (nullptr == handle) {
-    cerr << "Could not load library " << m_fileName << endl;
-    cerr << "Error: " << dlerror() << endl;
+    cerr << "Could not load library " << m_fileName << '\n';
+    cerr << "Error: " << dlerror() << '\n';
     return -1;
   }
 
@@ -21,15 +21,15 @@ int UnixLibraryLoader::loadLibrary() {
 
 int UnixLibraryLoader::closeLibrary() {
   if (nullptr == m_handle) {
-    cerr << "Invalid library handle" << endl;
+    cerr << "Invalid library handle" << '\n';
     return -1;
   }
 
   int n = dlclose(m_handle);
 
   if (0 != n) {
-    cerr << "Could not unload library " << m_fileName << endl;
-    cerr << "Error: " << dlerror() << endl;
+    cerr << "Could not unload library " << m_fileName << '\n';
+    cerr << "Error: " << dlerror() << '\n';
     return -1;
   }
 
@@ -38,7 +38,7 @@ int UnixLibraryLoader::closeLibrary() {
 
 void* UnixLibraryLoader::getFunctionPointer(string const &funcName) {
   if (nullptr == m_handle) {
-    cerr << "Invalid library handle" << endl;
+    cerr << "Invalid library handle" << '\n';
     return nullptr;
   }
 
@@ -46,8 +46,8 @@ void* UnixLibraryLoader::getFunctionPointer(string const &funcName) {
   void *fp = dlsym(m_handle, funcName.c_str());
 
   if (nullptr == fp) {
-    cerr << "Could not get function pointer for " << funcName << endl;
-    cerr << "Error: " << dlerror() << endl;
+    cerr << "Could not get function pointer for " << funcName << '\n';
+    cerr << "Error: " << dlerror() << '\n';
     return nullptr;
   }
 

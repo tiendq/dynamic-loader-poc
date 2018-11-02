@@ -11,8 +11,8 @@ int WindowsLibraryLoader::loadLibrary() {
   if (nullptr == handle) {
     DWORD error = GetLastError();
 
-    cerr << "Could not load library " << m_fileName << endl;
-    cerr << "Error: " << error << endl;
+    cerr << "Could not load library " << m_fileName << '\n';
+    cerr << "Error: " << error << '\n';
     return -1;
   }
 
@@ -22,7 +22,7 @@ int WindowsLibraryLoader::loadLibrary() {
 
 int WindowsLibraryLoader::closeLibrary() {
   if (nullptr == m_handle) {
-    cerr << "Invalid library handle" << endl;
+    cerr << "Invalid library handle" << '\n';
     return -1;
   }
 
@@ -31,8 +31,8 @@ int WindowsLibraryLoader::closeLibrary() {
   if (!success) {
     DWORD error = GetLastError();
 
-    cerr << "Could not unload library " << m_fileName << endl;
-    cerr << "Error: " << error << endl;
+    cerr << "Could not unload library " << m_fileName << '\n';
+    cerr << "Error: " << error << '\n';
     return -1;
   }
 
@@ -41,7 +41,7 @@ int WindowsLibraryLoader::closeLibrary() {
 
 void* WindowsLibraryLoader::getFunctionPointer(string const &funcName) {
   if (nullptr == m_handle) {
-    cerr << "Invalid library handle" << endl;
+    cerr << "Invalid library handle" << '\n';
     return nullptr;
   }
 
@@ -50,8 +50,8 @@ void* WindowsLibraryLoader::getFunctionPointer(string const &funcName) {
   if (nullptr == fp) {
     DWORD error = GetLastError();
 
-    cerr << "Could not get function pointer for " << funcName << endl;
-    cerr << "Error: " << error << endl;
+    cerr << "Could not get function pointer for " << funcName << '\n';
+    cerr << "Error: " << error << '\n';
     return nullptr;
   }
 

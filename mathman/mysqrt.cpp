@@ -1,4 +1,4 @@
-#include <math.h>
+#include <cmath>
 #include "mysqrt.h"
 
 double mysqrt(double x) {
