@@ -1,23 +1,10 @@
-cmake_minimum_required(VERSION 3.12.0)
+cmake_minimum_required(VERSION 3.12)
 project(dynloader)
-
-if(WIN32)
-  add_compile_definitions(__WINDOWS__)
-elseif(APPLE)
-  add_compile_definitions(__MACOS__)
-elseif(UNIX)
-  add_compile_definitions(__LINUX__)
-else()
-  message(FATAL_ERROR "Unsupported system. Build aborted.")
-endif()
 
 message(STATUS "Building for ${CMAKE_SYSTEM_NAME} system")
 
 set(CMAKE_BUILD_TYPE Release)
 message(STATUS "${CMAKE_BUILD_TYPE} build configuration is detected")
-
-set(MAIN_TARGET_NAME dynloader)
-set(PROJECT_SOURCES main.cpp library-loader-base.h)
 
 # Set the output folder where your program will be created
 set(CMAKE_BINARY_DIR "${CMAKE_SOURCE_DIR}/build/bin")
@@ -34,38 +21,43 @@ configure_file(
   "${CMAKE_BINARY_DIR}/cmake-config.h"
 )
 
-if(WIN32)
-  set(PROJECT_SOURCES ${PROJECT_SOURCES} windows-library-loader.cpp windows-library-loader.h)
-else()
-  set(PROJECT_SOURCES ${PROJECT_SOURCES} unix-library-loader.cpp unix-library-loader.h)
-endif()
-
 add_subdirectory(mathman)
 add_subdirectory(test1)
 add_subdirectory(test2)
-add_executable(${MAIN_TARGET_NAME} ${PROJECT_SOURCES})
-
-target_include_directories(${MAIN_TARGET_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/mathman")
-target_include_directories(${MAIN_TARGET_NAME} PRIVATE ${CMAKE_BINARY_DIR})
-
-target_link_libraries(${MAIN_TARGET_NAME} PRIVATE mathman)
+add_executable(${PROJECT_NAME} main.cpp library-loader-base.h)
 
 if(WIN32)
-  # Windows only libraries
-elseif(APPLE)
-  # macOS only libraries
+  target_sources(${PROJECT_NAME}
+    PRIVATE
+      windows-library-loader.cpp
+      windows-library-loader.h
+  )
 else()
-  # Linux only libraries
-  target_link_libraries(${MAIN_TARGET_NAME} PRIVATE dl)
+  target_sources(${PROJECT_NAME}
+    PRIVATE
+      unix-library-loader.cpp
+      unix-library-loader.h
+  )
 endif()
 
-target_compile_features(${MAIN_TARGET_NAME} PRIVATE cxx_std_14)
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_14)
+target_include_directories(${PROJECT_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/mathman")
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR})
+target_link_libraries(${PROJECT_NAME} PRIVATE mathman)
+
+if(WIN32)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE __WINDOWS__)
+elseif(APPLE)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE __MACOS__)
+elseif(UNIX)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE __LINUX__)
+  target_link_libraries(${PROJECT_NAME} PRIVATE dl)
+else()
+  message(FATAL_ERROR "Unsupported system. Build aborted.")
+endif()
 
 if (WIN32)
-  # warning level 4 and all warnings as errors
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /WX")
+  target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
 else()
-  # lots of warnings and all warnings as errors
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror")
-  # target_compile_options(${MAIN_TARGET_NAME} PRIVATE "SHELL: -Wall -Wextra -pedantic -Werror")
+  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic -Werror)
 endif()
